@@ -38,7 +38,7 @@ typedef struct
 	char aa[256];
 	int command;
 	int target;
-	
+
 }CHARACTER;
 
 //使用するものをあらかじめ定義
@@ -62,7 +62,7 @@ CHARACTER monsters[MONSTER_MAX] =
 };
 
 
-//実際に表示するものをcharactersに格納する
+//実際に表示するものをcharactersに格納するああ
 CHARACTER characters[CHARACTER_MAX];
 
 char commandNames[COMMAND_MAX][4 * 2 + 1] = {
@@ -90,14 +90,14 @@ void DrawBattleScreen()
 	);
 
 	//モンスターを表示する
-	printf("%s",characters[CHARACTER_MONSTER].aa);
+	printf("%s", characters[CHARACTER_MONSTER].aa);
 	printf("(HP:%d/%d)\n",
 		characters[CHARACTER_MONSTER].hp,
 		characters[CHARACTER_MONSTER].maxHp);
 
 	printf("\n");
-	
-	printf("%sが　現れた\n",characters[CHARACTER_MONSTER].name);
+
+	printf("%sが　現れた\n", characters[CHARACTER_MONSTER].name);
 }
 
 void SellectCommand()
@@ -106,7 +106,7 @@ void SellectCommand()
 	{
 		for (int i = 0; i < COMMAND_MAX; i++)
 		{
-			if (i==characters[CHARACTER_PLAYER].command)
+			if (i == characters[CHARACTER_PLAYER].command)
 			{
 				printf(">");
 			}
@@ -114,7 +114,7 @@ void SellectCommand()
 			{
 				printf(" ");
 			}
-			printf(" % s\n",commandNames[i]);
+			printf(" % s\n", commandNames[i]);
 		}
 
 		switch (_getch())
@@ -153,7 +153,7 @@ void Battle(int _monster)
 		SellectCommand();
 
 		//キャラクとモンスターを走査する
-		for ( int i = 0; i < CHARACTER_MAX; i++)
+		for (int i = 0; i < CHARACTER_MAX; i++)
 		{
 			DrawBattleScreen();
 
@@ -167,16 +167,16 @@ void Battle(int _monster)
 				int damage = 1 + rand() % characters[i].attack;
 				//敵のダメージを減らす
 				characters[characters[i].target].hp -= damage;
-				
-				if (characters[characters[i].target].hp<0)
+
+				if (characters[characters[i].target].hp < 0)
 				{
 					characters[characters[i].target].hp = 0;
 				}
 				DrawBattleScreen();
 
-				printf("%sに　%dのダメージ!\n",characters[characters[i].target].name,damage);
+				printf("%sに　%dのダメージ!\n", characters[characters[i].target].name, damage);
 				_getch();
-				
+
 				if (characters[characters[i].target].hp <= 0)
 				{
 					switch (characters[i].target)
@@ -187,10 +187,10 @@ void Battle(int _monster)
 
 					case CHARACTER_MONSTER:
 
-						strcpy_s(characters[characters[i].target].aa,"\n");
+						strcpy_s(characters[characters[i].target].aa, "\n");
 						DrawBattleScreen();
 
-						printf("%s	を倒した",characters[characters[i].target].name);
+						printf("%s	を倒した", characters[characters[i].target].name);
 
 						break;
 					}
@@ -202,17 +202,51 @@ void Battle(int _monster)
 
 				break;
 			}
-			
-			case COMMAND_SPELL:
+
+			case COMMAND_SPELL: {
 				printf("%sの　呪文！", characters[i].name);
 				_getch();
-				break;
+
+				int damage = 1 + rand() % characters[i].attack;
+				//敵のダメージを減らす
+				characters[characters[i].target].hp -= damage;
+
+				if (characters[characters[i].target].hp < 0)
+				{
+					characters[characters[i].target].hp = 0;
+				}
+				DrawBattleScreen();
+
+				printf("%sに　%dのダメージ!\n", characters[characters[i].target].name, damage);
+				_getch();
+
+				if (characters[characters[i].target].hp <= 0)
+				{
+					switch (characters[i].target)
+					{
+					case CHARACTER_PLAYER:
+						printf("%s	は倒されてしまった", characters[characters[i].target].name);
+						break;
+
+					case CHARACTER_MONSTER:
+
+						strcpy_s(characters[characters[i].target].aa, "\n");
+						DrawBattleScreen();
+
+						printf("%s	を倒した", characters[characters[i].target].name);
+
+						break;
+					}
+					return;
+				}
+				_getch();
+				break; 
+			}
 
 			case COMMAND_RUN:
 				printf("%sは　逃げた。。", characters[i].name);
 				_getch();
-				break;
-				break;
+				return;
 			}
 		}
 	}
