@@ -5,11 +5,15 @@
 #include<time.h>
 #include<string.h>
 
+#define SPELL_COAT (3)
+
+
 //列挙を分かりやすい索引として使っている
 enum CHRACTER
 {
 	CHARACTER_PLAYER,
 	CHARACTER_MONSTER,
+	CHARACTER_BOSS,
 	CHARACTER_MAX
 };
 enum MONSTER
@@ -46,7 +50,7 @@ CHARACTER monsters[MONSTER_MAX] =
 {
 	//Player
 	{
-	15,15,15,15,3,"ゆうしゃ",
+	100,100,25,15,3,"ゆうしゃ",
 	},
 	//Slime
 	{
@@ -56,13 +60,13 @@ CHARACTER monsters[MONSTER_MAX] =
 	},
 	{
 		255,255,0,0,50,"まおう",
-		" A@A\n"
+		"  A@A\n"
 		"$(^m^)$"
 	},
 };
 
 
-//実際に表示するものをcharactersに格納するああ
+//実際に表示するものをcharactersに格納する５
 CHARACTER characters[CHARACTER_MAX];
 
 char commandNames[COMMAND_MAX][4 * 2 + 1] = {
@@ -102,6 +106,8 @@ void DrawBattleScreen()
 
 void SellectCommand()
 {
+	characters[CHARACTER_PLAYER].command = COMMAND_FIGHT;
+
 	while (1)
 	{
 		for (int i = 0; i < COMMAND_MAX; i++)
@@ -136,7 +142,7 @@ void SellectCommand()
 
 void Battle(int _monster)
 {
-	characters[CHARACTER_MONSTER] = monsters[MONSTER_SLIME];
+	characters[CHARACTER_MONSTER] = monsters[MONSTER_BOSS];
 
 	//基本的に戦闘が起きるたびに描画処理を発火させる
 	DrawBattleScreen();
@@ -182,7 +188,7 @@ void Battle(int _monster)
 					switch (characters[i].target)
 					{
 					case CHARACTER_PLAYER:
-						printf("%s	は倒されてしまった", characters[characters[i].target].name);
+						printf("あなたは倒されてしまった。。。");
 						break;
 
 					case CHARACTER_MONSTER:
@@ -204,49 +210,36 @@ void Battle(int _monster)
 			}
 
 			case COMMAND_SPELL: {
-				printf("%sの　呪文！", characters[i].name);
-				_getch();
 
-				int damage = 1 + rand() % characters[i].attack;
-				//敵のダメージを減らす
-				characters[characters[i].target].hp -= damage;
-
-				if (characters[characters[i].target].hp < 0)
-				{
-					characters[characters[i].target].hp = 0;
-				}
-				DrawBattleScreen();
-
-				printf("%sに　%dのダメージ!\n", characters[characters[i].target].name, damage);
-				_getch();
-
-				if (characters[characters[i].target].hp <= 0)
-				{
-					switch (characters[i].target)
-					{
-					case CHARACTER_PLAYER:
-						printf("%s	は倒されてしまった", characters[characters[i].target].name);
-						break;
-
-					case CHARACTER_MONSTER:
-
-						strcpy_s(characters[characters[i].target].aa, "\n");
-						DrawBattleScreen();
-
-						printf("%s	を倒した", characters[characters[i].target].name);
-
-						break;
-					}
+				if (characters[i].mp<SPELL_COAT) {
+					printf("MPが足りないので呪文が発動できません");
+					_getch();
 					return;
 				}
+
+				printf("%sは　回復呪文を使った！", characters[i].name);
 				_getch();
+
+				int hile = 1 + rand() % characters[i].maxHp;
+				characters[i].mp -= SPELL_COAT;
+
+				DrawBattleScreen();
+
+				characters[i].hp += hile;
+
+				DrawBattleScreen();
+
+				printf("%s　の傷が回復した");
+				_getch();
+
 				break; 
 			}
 
 			case COMMAND_RUN:
-				printf("%sは　逃げた。。", characters[i].name);
+				printf("%sは　逃げた。。\n", characters[i].name);
 				_getch();
 				return;
+				break;
 			}
 		}
 	}
@@ -257,5 +250,5 @@ int main()
 	srand((unsigned int)time(NULL));
 
 	Init();
-	Battle(MONSTER_SLIME);
+	Battle(MONSTER_BOSS);
 }
