@@ -62,7 +62,7 @@ CHARACTER monsters[MONSTER_MAX] =
 };
 
 
-//é¿ç€Ç…ï\é¶Ç∑ÇÈÇ‡ÇÃÇcharactersÇ…äiî[Ç∑ÇÈ
+//é¿ç€Ç…ï\é¶Ç∑ÇÈÇ‡ÇÃÇcharactersÇ…äiî[Ç∑ÇÈÇ†Ç†
 CHARACTER characters[CHARACTER_MAX];
 
 char commandNames[COMMAND_MAX][4 * 2 + 1] = {
